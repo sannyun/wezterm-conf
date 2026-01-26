@@ -25,7 +25,12 @@ config.font = wezterm.font_with_fallback({
 	"Symbols Nerd Font",
 })
 
-config.font_size = 12.0
+if wezterm.target_triple == "aarch64-apple-darwin" then
+	config.font_size = 14.0
+else
+	config.font_size = 12.0
+end
+
 config.line_height = 1.0
 
 config.underline_position = -3
