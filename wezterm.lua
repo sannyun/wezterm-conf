@@ -1,4 +1,8 @@
+---@type Wezterm
 local wezterm = require("wezterm")
+
+local projects = require("projects")
+
 local mux = wezterm.mux
 
 wezterm.on("gui-startup", function(cmd)
@@ -7,6 +11,7 @@ wezterm.on("gui-startup", function(cmd)
 	gui_window:maximize()
 end)
 
+---@type Config
 local config = wezterm.config_builder()
 
 config.window_decorations = "RESIZE"
@@ -35,6 +40,28 @@ config.line_height = 1.0
 
 config.underline_position = -3
 config.underline_thickness = 2
+
+config.leader = { key = "a", mods = "CTRL", timeout_milliseconds = 1000 }
+
+config.keys = {
+	{
+		key = "p",
+		mods = "LEADER",
+		action = wezterm.action_callback(projects.choose_project),
+	},
+	{
+		key = "n",
+		mods = "LEADER",
+		action = wezterm.action_callback(projects.nvim_project),
+	},
+	{
+		key = "w",
+		mods = "LEADER",
+		action = wezterm.action.ShowLauncherArgs({ flags = "FUZZY | WORKSPACES" }),
+	},
+	{ key = "z", mods = "LEADER", action = wezterm.action.TogglePaneZoomState },
+	{ key = "L", mods = "CTRL", action = wezterm.action.ShowDebugOverlay },
+}
 
 local process_icons = {}
 process_icons["nvim"] = ""
