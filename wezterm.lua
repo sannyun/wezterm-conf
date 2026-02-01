@@ -86,12 +86,23 @@ end
 local function get_tab_color(tab_info)
 	local active_pane = tab_info.active_pane
 	local cwd = active_pane.current_working_dir
-	return string_to_color(cwd.file_path)
+	if cwd ~= nil then
+		return string_to_color(cwd.file_path)
+	end
+
+	return nil
 end
 
 local function calculate_tab_title(tab_info)
+	local max_pane_title_width = 28
 	local active_pane = tab_info.active_pane
 	local pane_title = active_pane.title
+	local pane_title_width = #pane_title
+	pane_title = wezterm.truncate_left(pane_title, max_pane_title_width)
+	if pane_title_width > max_pane_title_width then
+		pane_title = "..." .. pane_title
+	end
+
 	local title = pane_title
 
 	local process = active_pane.user_vars.WEZTERM_PROG
@@ -119,10 +130,11 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 
 	local color_scheme = config.resolved_palette
 	local fg = wezterm.color.parse(color_scheme.foreground)
+	local bg = wezterm.color.parse(color_scheme.background)
 
 	if tab.is_active then
 		return {
-			{ Background = { Color = get_tab_color(tab) } },
+			{ Background = { Color = get_tab_color(tab) or bg } },
 			{ Foreground = { Color = fg } },
 			{ Text = title },
 		}
