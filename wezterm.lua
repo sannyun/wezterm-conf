@@ -143,4 +143,22 @@ wezterm.on("format-tab-title", function(tab, tabs, panes, config, hover, max_wid
 	return title
 end)
 
+wezterm.on("update-status", function(window, _)
+	local color_scheme = window:effective_config().resolved_palette
+	local fg = color_scheme.foreground
+	local bg = color_scheme.background
+
+	local elements = {}
+
+	table.insert(elements, { Foreground = { Color = bg } })
+	table.insert(elements, { Background = { Color = "none" } })
+	table.insert(elements, { Text = "" })
+
+	table.insert(elements, { Foreground = { Color = fg } })
+	table.insert(elements, { Background = { Color = bg } })
+	table.insert(elements, { Text = " " .. window:active_workspace() .. " " })
+
+	window:set_right_status(wezterm.format(elements))
+end)
+
 return config
