@@ -9,7 +9,7 @@ local function project_dir()
 		wezterm.run_child_process({ "cat", string.format("%s/%s", wezterm.config_dir, "PROJECTS_DIR") })
 
 	if success and #stdout > 0 then
-		return stdout:match("%c*([%w//]+)%c*$")
+		return stdout:match("%c*([%w//.]+)%c*$")
 	else
 		return "~"
 	end
@@ -17,15 +17,20 @@ end
 
 function module.choose_project(window, pane)
 	local dir = project_dir()
-	wezterm.log_info(dir)
 
 	local projects = wezterm.read_dir(dir)
 
 	local choices = {}
 	for _, v in ipairs(projects) do
-		local success, stdout, _ = wezterm.run_child_process({ "stat", "-c", "%F", v })
+		local stat_args
+		if string.match(wezterm.target_triple, "apple%-darwin") then
+			stat_args = { "stat", "-f", "%HT", v }
+		else
+			stat_args = { "stat", "-c", "%F", v }
+		end
+		local success, stdout, _ = wezterm.run_child_process(stat_args)
 
-		local _, count = string.gsub(stdout, "directory", {})
+		local _, count = string.gsub(string.lower(stdout), "directory", {})
 		if success and count > 0 then
 			table.insert(choices, { label = v })
 		end
