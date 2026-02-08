@@ -1,8 +1,11 @@
 ---@type Wezterm
 local wezterm = require("wezterm")
 
+-- Add custom path for .default.lua files
+package.path = package.path .. ";" .. wezterm.config_dir .. "/?.default.lua"
+
 local projects = require("projects")
-local presets = require("presets") or {}
+local presets = require("presets")
 
 local mux = wezterm.mux
 

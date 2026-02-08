@@ -4,7 +4,7 @@ local wezterm = require("wezterm")
 ---@class Wezterm.Global
 local g = wezterm.GLOBAL
 
-local presets = require("presets") or {}
+local presets = require("presets")
 
 local mux = wezterm.mux
 
@@ -113,7 +113,7 @@ function module.switch_to_prev_workspace(window, pane)
 end
 
 function module.choose_project(window, pane)
-	local dir = presets.projects_dir or "~"
+	local dir = presets.projects_dir or wezterm.home_dir
 
 	local projects = wezterm.read_dir(dir)
 
