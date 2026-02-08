@@ -2,6 +2,7 @@
 local wezterm = require("wezterm")
 
 local projects = require("projects")
+local presets = require("presets") or {}
 
 local mux = wezterm.mux
 
@@ -30,11 +31,7 @@ config.font = wezterm.font_with_fallback({
 	"Symbols Nerd Font",
 })
 
-if wezterm.target_triple == "aarch64-apple-darwin" then
-	config.font_size = 14.0
-else
-	config.font_size = 12.0
-end
+config.font_size = presets.font_size or 12
 
 config.line_height = 1.0
 
@@ -50,14 +47,28 @@ config.keys = {
 		action = wezterm.action_callback(projects.choose_project),
 	},
 	{
-		key = "n",
-		mods = "LEADER",
-		action = wezterm.action_callback(projects.nvim_project),
-	},
-	{
 		key = "w",
 		mods = "LEADER",
-		action = wezterm.action.ShowLauncherArgs({ flags = "FUZZY | WORKSPACES" }),
+		action = wezterm.action_callback(projects.choose_workspace),
+	},
+	{
+		key = "`",
+		mods = "LEADER",
+		action = wezterm.action_callback(projects.switch_to_prev_workspace),
+	},
+	{
+		key = "j",
+		mods = "LEADER",
+		action = wezterm.action.ActivatePaneDirection("Down"),
+	},
+	{
+		key = "k",
+		mods = "LEADER",
+		action = wezterm.action.ActivatePaneDirection("Up"),
+	},
+	{
+		key = "F9",
+		action = wezterm.action_callback(projects.toggle_terminal),
 	},
 	{ key = "z", mods = "LEADER", action = wezterm.action.TogglePaneZoomState },
 	{ key = "L", mods = "CTRL", action = wezterm.action.ShowDebugOverlay },
