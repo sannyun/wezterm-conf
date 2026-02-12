@@ -90,6 +90,8 @@ function module.choose_workspace(window, pane)
 			choices = choices,
 			fuzzy = true,
 			action = wezterm.action_callback(function(_, _, _, label)
+				-- NOTE: truncate "i: " that follows the name of the workspace
+				label = label:match("^%d+%: (.+)")
 				if not label then
 					return
 				end
